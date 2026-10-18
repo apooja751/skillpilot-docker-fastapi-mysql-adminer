@@ -1,10 +1,11 @@
-
 # SkillPilot Task 3: Multi-Container Development Environment
 
 ## Aim
-Build a multi-container development environment using FastAPI, MySQL, Adminer, and Docker Compose.
+
+Build a multi-container development environment using FastAPI, MySQL, Adminer, Docker, and Docker Compose.
 
 ## Technologies Used
+
 - Python 3.12
 - FastAPI
 - MySQL 8.4
@@ -13,77 +14,114 @@ Build a multi-container development environment using FastAPI, MySQL, Adminer, a
 - Docker Compose
 
 ## Architecture
-- **FastAPI:** Provides the REST API on port 8000.
-- **MySQL:** Stores application data in a persistent Docker volume.
-- **Adminer:** Provides a browser-based database management interface on port 8080.
-- **Docker Compose:** Defines and manages all three services.
+
+- **FastAPI:** Provides REST API endpoints on port 8000.
+- **MySQL:** Stores application data using persistent Docker storage.
+- **Adminer:** Provides a browser-based database administration interface on port 8080.
+- **Docker Compose:** Defines and manages the application services.
 
 ## Project Files
-- `main.py` — FastAPI application and database connectivity test.
-- `requirements.txt` — Python dependencies.
-- `Dockerfile` — Builds the FastAPI image.
-- `docker-compose.yml` — Configures the three services.
-- `.env.example` — Documents required environment variables.
-- `.gitignore` — Excludes environment secrets and temporary files.
+
+```text
+skillpilot-docker-fastapi-mysql-adminer/
+├── .env.example
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── main.py
+├── requirements.txt
+└── README.md
+```
+
+The `.env` file contains local environment variables and must not be committed to GitHub.
 
 ## Prerequisites
-- Docker Desktop with Docker Engine running
+
+- GitHub Codespaces or a computer with Docker installed
 - Docker Compose
+- A web browser
 
-## Setup Instructions
+## Environment Configuration
 
-1. Clone this repository:
-   ```bash
-   git clone <YOUR_REPOSITORY_URL>
-   cd skillpilot-task3-fastapi-mysql-adminer
-   ```
+Create a local `.env` file using `.env.example` as a template.
 
-2. Create a local environment file:
-   ```bash
-   cp .env.example .env
-   ```
+Set the following variables in `.env` with your own secure passwords:
 
-3. Edit `.env` and replace the example passwords with strong local passwords.
+```env
+DB_NAME=skillpilot_db
+DB_USER=appuser
+DB_PASSWORD=your_secure_app_password
+DB_ROOT_PASSWORD=your_secure_root_password
+```
 
-4. Start the services:
-   ```bash
-   docker compose up --build -d
-   ```
+Do not commit `.env` or real credentials to GitHub.
 
-5. Check service status:
-   ```bash
-   docker compose ps
-   ```
+## Running the Application
 
-## Verification
+Build the application image and start the services:
 
-- API home: http://localhost:8000/
-- API health: http://localhost:8000/health
-- Database connectivity: http://localhost:8000/db-test
-- Interactive API documentation: http://localhost:8000/docs
-- Adminer: http://localhost:8080
+```bash
+docker compose up --build -d
+```
 
-For Adminer, use:
-- System: MySQL
-- Server: `db`
-- Username: the value of `DB_USER` in `.env`
-- Password: the value of `DB_PASSWORD` in `.env`
-- Database: the value of `DB_NAME` in `.env`
+Check the service status:
 
-## Persistent Storage
-MySQL data is stored in the named Docker volume `mysql_data`, so it survives normal container recreation.
+```bash
+docker compose ps
+```
 
-## Stop the Environment
+View the logs:
+
+```bash
+docker compose logs
+```
+
+Stop the services:
+
 ```bash
 docker compose down
 ```
 
-To also delete the database volume and its data:
-```bash
-docker compose down -v
-```
+To remove the containers while preserving the database volume, use `docker compose down` without the `-v` option.
 
-**Warning:** The second command permanently deletes the project's stored database data.
+## API Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `/` | Displays the application welcome response |
+| `/health` | Checks API health |
+| `/db-test` | Tests the database connection |
+
+In GitHub Codespaces, open port 8000 using the forwarded-port URL.
+
+Append `/health` or `/db-test` to that URL to test the respective endpoint.
+
+The database test should be considered successful only when the API confirms a successful MySQL connection.
+
+## Adminer Database Access
+
+Open port 8080 through the Codespaces forwarded ports.
+
+Use these settings:
+
+- **System:** MySQL / MariaDB
+- **Server:** `db`
+- **Username:** The value of `DB_USER` in `.env`
+- **Password:** The value of `DB_PASSWORD` in `.env`
+- **Database:** The value of `DB_NAME` in `.env`
+
+Do not include actual passwords in this README.
+
+## Verification
+
+The FastAPI welcome endpoint and health endpoint returned successful responses during testing. MySQL was reported as healthy, and the Adminer container was running.
+
+The complete database connection and combined Docker Compose deployment require final verification.
 
 ## Result
-The project is configured to run FastAPI, MySQL, and Adminer as a multi-container environment. Successful execution and database connectivity must be verified after starting the Docker services.
+
+A development environment was configured with FastAPI, MySQL, and Adminer using Docker Compose. The API endpoints were tested, and the database and administration services were started.
+
+## Conclusion
+
+This task demonstrates how to organize an application into multiple containers, configure environment variables, use persistent database storage, and manage services with Docker Compose.
